@@ -6,7 +6,7 @@ from main import part_one
 from main import part_two
 
 
-class MediasortOutput(unittest.TestCase):
+class TestDay01(unittest.TestCase):
     def log_testcase_name(self, param_name):
         logging.info("****** TC: " + param_name + " ******")
 
