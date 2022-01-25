@@ -14,13 +14,16 @@ class TestDay01(unittest.TestCase):
     def test_part_one(self):
         self.log_testcase_name(inspect.currentframe().f_code.co_name)
         self.assertEqual(part_one("test.txt"), 7)
+
+    def test_part_two(self):
+        self.log_testcase_name(inspect.currentframe().f_code.co_name)
         self.assertEqual(part_two("test.txt"), 5)
 
 
-if __name__ == '__main__':
+if __name__ == 'test_main':
     logging.basicConfig(filename='./test_main.log', format='%(asctime)s %(levelname)s %(message)s',
                         datefmt='%Y-%m-%d %H:%M:%S', filemode='w', level=logging.INFO)
 
     # unittest.main()
-    suite = unittest.TestLoader().loadTestsFromTestCase(MediasortOutput)
+    suite = unittest.TestLoader().loadTestsFromTestCase(TestDay01)
     unittest.TextTestRunner(verbosity=2).run(suite)
