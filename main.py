@@ -13,7 +13,6 @@ def part_one(filename):
 
         previous = int(line)
 
-    print("Part 1: " + str(increased))
     file.close()
     return increased
 
@@ -35,7 +34,6 @@ def part_two(filename):
         if (sum2 - sum1) > 0:
             increased += 1
         n += 1
-    print("Part 2: " + str(increased))
     file.close()
     return increased
 
@@ -45,7 +43,7 @@ def part_one_lambda(filename):
     measurements = list(map(int, open(filename)))
     increased = lambda: \
         sum(previous < current for (previous, current) in zip(measurements, measurements[1:]))
-    print("Part 1: " + str(increased()))
+    print("Day 01 Part 1: " + str(increased()))
 
 
 def part_two_lambda(filename):
@@ -55,17 +53,40 @@ def part_two_lambda(filename):
     increased = lambda window: \
         sum(previous < current for (previous, current) in zip(measurements[:-window], measurements[window:]))
 
-    print("Part 2: " + str(increased(3)))
+    print("Day 01 Part 2: " + str(increased(3)))
     # print("Part 1: " + str(increased(1)))
+
+
+def dive(filename):
+    horizontal_position = 0
+    depth = 0
+
+    #  open a file using with it will take care of closing
+    with open(filename) as file:
+        for line in file:
+            d = line.strip().split(' ')
+            command = d[0]
+            movement = int(d[1])
+            if command == 'forward':
+                horizontal_position += movement
+            elif command == 'down':
+                depth += movement
+            elif command == 'up':
+                depth -= movement
+
+    # load key value pairs
+
+    return horizontal_position * depth
 
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
 
-    input_filename = 'input.txt'
+    input_filename = 'data/day01/input.txt'
 
-    part_one(input_filename)
-    part_one_lambda(input_filename)
+    print("Day01-1: " + str(part_one(input_filename)))
+    print("Day01-1: " + str(part_two(input_filename)))
+    # part_one_lambda(input_filename)
+    # part_two_lambda(input_filename)
 
-    part_two(input_filename)
-    part_two_lambda(input_filename)
+    print("Day02-1: " + str(dive('data/day02/input.txt')))

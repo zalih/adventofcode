@@ -4,6 +4,7 @@ import inspect
 
 from main import part_one
 from main import part_two
+from main import dive
 
 
 class TestDay01(unittest.TestCase):
@@ -13,11 +14,15 @@ class TestDay01(unittest.TestCase):
     # unit tests
     def test_part_one(self):
         self.log_testcase_name(inspect.currentframe().f_code.co_name)
-        self.assertEqual(part_one("test.txt"), 7)
+        self.assertEqual(part_one("data/day01/test.txt"), 7)
 
     def test_part_two(self):
         self.log_testcase_name(inspect.currentframe().f_code.co_name)
-        self.assertEqual(part_two("test.txt"), 5)
+        self.assertEqual(part_two("data/day01/test.txt"), 5)
+
+    def test_dive(self):
+        self.log_testcase_name(inspect.currentframe().f_code.co_name)
+        self.assertEqual(dive("data/day02/test.txt"), 150)
 
 
 if __name__ == 'test_main':
