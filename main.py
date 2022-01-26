@@ -43,7 +43,7 @@ def part_one_lambda(filename):
     measurements = list(map(int, open(filename)))
     increased = lambda: \
         sum(previous < current for (previous, current) in zip(measurements, measurements[1:]))
-    print("Day 01 Part 1: " + str(increased()))
+    return increased
 
 
 def part_two_lambda(filename):
@@ -52,9 +52,7 @@ def part_two_lambda(filename):
     # print(measurements)
     increased = lambda window: \
         sum(previous < current for (previous, current) in zip(measurements[:-window], measurements[window:]))
-
-    print("Day 01 Part 2: " + str(increased(3)))
-    # print("Part 1: " + str(increased(1)))
+    return increased
 
 
 def dive(filename):
@@ -79,6 +77,27 @@ def dive(filename):
     return horizontal_position * depth
 
 
+def dive_aim(filename):
+    horizontal_position = 0
+    depth = 0
+    aim = 0
+
+    with open(filename) as file:
+        for line in file:
+            d = line.strip().split(' ')
+            command = d[0]
+            movement = int(d[1])
+            if command == 'forward':
+                horizontal_position += movement
+                depth += (movement * aim)
+            elif command == 'down':
+                aim += movement
+            elif command == 'up':
+                aim -= movement
+
+    return horizontal_position * depth
+
+
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
 
@@ -90,3 +109,4 @@ if __name__ == '__main__':
     # part_two_lambda(input_filename)
 
     print("Day02-1: " + str(dive('data/day02/input.txt')))
+    print("Day02-2: " + str(dive_aim('data/day02/input.txt')))

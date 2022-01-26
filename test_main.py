@@ -5,6 +5,7 @@ import inspect
 from main import part_one
 from main import part_two
 from main import dive
+from main import dive_aim
 
 
 class TestDay01(unittest.TestCase):
@@ -23,6 +24,10 @@ class TestDay01(unittest.TestCase):
     def test_dive(self):
         self.log_testcase_name(inspect.currentframe().f_code.co_name)
         self.assertEqual(dive("data/day02/test.txt"), 150)
+
+    def test_dive_aim(self):
+        self.log_testcase_name(inspect.currentframe().f_code.co_name)
+        self.assertEqual(dive_aim("data/day02/test.txt"), 900)
 
 
 if __name__ == 'test_main':
