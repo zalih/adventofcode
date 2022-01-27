@@ -98,9 +98,37 @@ def dive_aim(filename):
     return horizontal_position * depth
 
 
+def power_consumption(filename):
+    gamma_rate, epsilon_rate = 0, 0
+    with open(filename) as file:
+        diagnostics = [list(line.strip()) for line in file.readlines()]
+
+    report_size = len(diagnostics)
+    if report_size > 0:
+        record_size = len(diagnostics[0])
+
+    col = 0
+
+    while col < record_size:
+        row = 0
+        one, zero = 0, 0
+        while row < report_size:
+            if diagnostics[row][col] == '1':
+                one += 1
+            else:
+                zero += 1
+            row += 1
+        if (one - zero) > 0:
+            gamma_rate |= (1 << (record_size - col - 1))
+        else:
+            epsilon_rate |= (1 << (record_size - col - 1))
+        col += 1
+
+    return gamma_rate * epsilon_rate
+
+
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-
     input_filename = 'data/day01/input.txt'
 
     print("Day01-1: " + str(part_one(input_filename)))
@@ -110,3 +138,5 @@ if __name__ == '__main__':
 
     print("Day02-1: " + str(dive('data/day02/input.txt')))
     print("Day02-2: " + str(dive_aim('data/day02/input.txt')))
+
+    print("Day03-1: " + str(power_consumption('data/day03/input.txt')))

@@ -6,6 +6,7 @@ from main import part_one
 from main import part_two
 from main import dive
 from main import dive_aim
+from main import power_consumption
 
 
 class TestDay01(unittest.TestCase):
@@ -28,6 +29,10 @@ class TestDay01(unittest.TestCase):
     def test_dive_aim(self):
         self.log_testcase_name(inspect.currentframe().f_code.co_name)
         self.assertEqual(dive_aim("data/day02/test.txt"), 900)
+
+    def test_power_consumption(self):
+        self.log_testcase_name(inspect.currentframe().f_code.co_name)
+        self.assertEqual(power_consumption("data/day03/test.txt"), 198)
 
 
 if __name__ == 'test_main':
