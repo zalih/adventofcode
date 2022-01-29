@@ -7,6 +7,8 @@ from main import part_two
 from main import dive
 from main import dive_aim
 from main import power_consumption
+from main import support_rating
+from main import binary_array2int
 
 
 class TestDay01(unittest.TestCase):
@@ -33,6 +35,15 @@ class TestDay01(unittest.TestCase):
     def test_power_consumption(self):
         self.log_testcase_name(inspect.currentframe().f_code.co_name)
         self.assertEqual(power_consumption("data/day03/test.txt"), 198)
+
+    def test_support_rating(self):
+        self.log_testcase_name(inspect.currentframe().f_code.co_name)
+        self.assertEqual(support_rating("data/day03/test.txt"), 230)
+
+    def test_binstr2int(self):
+        self.log_testcase_name(inspect.currentframe().f_code.co_name)
+        self.assertEqual(binary_array2int(['1', '0', '1', '1', '0', '1']), 45)
+        self.assertEqual(binary_array2int(['1', '0', '0', '0', '0', '0', '0', '1']), 129)
 
 
 if __name__ == 'test_main':

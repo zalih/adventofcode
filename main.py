@@ -127,6 +127,74 @@ def power_consumption(filename):
     return gamma_rate * epsilon_rate
 
 
+def filter_diagnostics(diagnostics, is_major=True, col=0):
+    report_size = len(diagnostics)
+    if report_size > 0:
+        record_size = len(diagnostics[0])
+    else:
+        return None
+
+    filtered = []
+    ones = []
+    zeros = []
+
+    row = 0
+    one, zero = 0, 0
+    while row < report_size:
+        if diagnostics[row][col] == '1':
+            one += 1
+            ones.append(diagnostics[row])
+        else:
+            zero += 1
+            zeros.append(diagnostics[row])
+        row += 1
+
+    if is_major:
+        if (one - zero) >= 0:
+            filtered = ones
+        else:
+            filtered = zeros
+    else:
+        if (zero - one) > 0 and len(ones) > 0:
+            filtered = ones
+        elif len(zeros) > 0:
+            filtered = zeros
+        elif len(ones) > 0:
+            filtered = ones
+
+    col += 1
+    if col < record_size:
+        filtered = filter_diagnostics(filtered, is_major, col)
+
+    return filtered
+
+
+def binary_array2int(input_array):
+    output, index = 0, 0
+    length = len(input_array)
+    for item in input_array:
+        if item == '1':
+            output |= (1 << (length - index - 1))
+        index += 1
+
+    return output
+
+
+def support_rating(filename):
+    oxygen_generator_rating, co2_scrubber_rating = 0, 0
+    with open(filename) as file:
+        diagnostics = [list(line.strip()) for line in file.readlines()]
+
+    report_size = len(diagnostics)
+    if report_size > 0:
+        record_size = len(diagnostics[0])
+
+    oxygen_generator_rating = binary_array2int(filter_diagnostics(diagnostics)[0])
+    co2_scrubber_rating = binary_array2int(filter_diagnostics(diagnostics, False)[0])
+
+    return oxygen_generator_rating * co2_scrubber_rating
+
+
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     input_filename = 'data/day01/input.txt'
@@ -140,3 +208,4 @@ if __name__ == '__main__':
     print("Day02-2: " + str(dive_aim('data/day02/input.txt')))
 
     print("Day03-1: " + str(power_consumption('data/day03/input.txt')))
+    print("Day03-2: " + str(support_rating('data/day03/input.txt')))
