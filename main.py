@@ -1,6 +1,7 @@
 # Day01 solution in Python.
 
 
+# Day 01 Part 1
 def part_one(filename):
     previous = 0
     increased = 0
@@ -17,6 +18,7 @@ def part_one(filename):
     return increased
 
 
+# Day 01 Part 2
 def part_two(filename):
     # load values into an array and cast to int using comprehensions
     file = open(filename, 'r')
@@ -38,23 +40,25 @@ def part_two(filename):
     return increased
 
 
+# Day 01 Part 1 using lambda
 def part_one_lambda(filename):
     # load values into a list
     measurements = list(map(int, open(filename)))
     increased = lambda: \
         sum(previous < current for (previous, current) in zip(measurements, measurements[1:]))
-    return increased
+    return increased()
 
 
+# Day 01 Part 1 using lambda
 def part_two_lambda(filename):
     # load values into a list
     measurements = list(map(int, open(filename)))
-    # print(measurements)
     increased = lambda window: \
         sum(previous < current for (previous, current) in zip(measurements[:-window], measurements[window:]))
-    return increased
+    return increased(3)
 
 
+# Day 02 Part 1
 def dive(filename):
     horizontal_position = 0
     depth = 0
@@ -77,6 +81,7 @@ def dive(filename):
     return horizontal_position * depth
 
 
+# Day 02 Part 2
 def dive_aim(filename):
     horizontal_position = 0
     depth = 0
@@ -98,6 +103,7 @@ def dive_aim(filename):
     return horizontal_position * depth
 
 
+# Day 03 Part 1
 def power_consumption(filename):
     gamma_rate, epsilon_rate = 0, 0
     with open(filename) as file:
@@ -127,6 +133,7 @@ def power_consumption(filename):
     return gamma_rate * epsilon_rate
 
 
+# Day 03 Part 2
 def filter_diagnostics(diagnostics, is_major=True, col=0):
     report_size = len(diagnostics)
     if report_size > 0:
@@ -201,8 +208,8 @@ if __name__ == '__main__':
 
     print("Day01-1: " + str(part_one(input_filename)))
     print("Day01-1: " + str(part_two(input_filename)))
-    # part_one_lambda(input_filename)
-    # part_two_lambda(input_filename)
+    print("Day01-1-lambda: " + str(part_one_lambda(input_filename)))
+    print("Day01-2-lambda: " + str(part_two_lambda(input_filename)))
 
     print("Day02-1: " + str(dive('data/day02/input.txt')))
     print("Day02-2: " + str(dive_aim('data/day02/input.txt')))
