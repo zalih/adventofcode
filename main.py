@@ -1,4 +1,6 @@
-# Day01 solution in Python.
+# Advent of Code solutions
+
+import numpy as np
 
 
 # Day 01 Part 1
@@ -202,6 +204,102 @@ def support_rating(filename):
     return oxygen_generator_rating * co2_scrubber_rating
 
 
+def calc_bingo(boards_marked, board):
+    marks_sum = 0
+    i, j = 0, 0
+    for row in boards_marked:
+        for value in row:
+            if not value:
+                marks_sum += board[i, j]
+            j += 1
+        i += 1
+        j = 0
+
+    return marks_sum
+
+
+def bingo(filename, lastWinner = False):
+    score, line_counter, board_number = 0, 0, 0
+
+    board = []
+    boards = []
+    winners = {}
+
+    row_counter = 0
+    # print(boards)
+    with open(filename) as file:
+        for line in file:
+            if line_counter == 0:
+                numbers = [int(x) for x in line.split(',')]
+            else:
+                if len(line) > 5:
+                    line = ' '.join(line.split())
+                    # board.append(line.split(' '))
+                    board.append(([int(x) for x in line.split(' ')]))
+                    row_counter += 1
+
+                if row_counter == 5:
+                    boards.append(board)
+                    board_number += 1
+                    board = []
+                    row_counter = 0
+
+            line_counter += 1
+    boards_np = np.asarray(boards)
+    boards_marked = np.zeros((len(boards), 5, 5), dtype=bool)
+
+    board_number = 0
+    for board in boards_np:
+        board_number += 1
+        # print("Board " + str(board_number))
+        # print(board)
+
+    board_index = 0
+    row_index = 0
+    col_index = 0
+    for number in numbers:
+        for board in boards_np:
+            for row in board:
+                for col in row:
+                    if col == number:
+                        # print(str(number) + " mark at " + str(board_index)+":"+str(row_index)+":"+str(col_index))
+                        boards_marked[board_index, row_index, col_index] = True
+                        i, k = 0, 0
+                        while i < 5:
+                            if boards_marked[board_index, i, col_index]:
+                                k += 1
+                            if k == 5:
+                                if not winners.get(board_index):
+                                    winners[board_index] = col * calc_bingo(boards_marked[board_index], board)
+                                # return col * calc_bingo(boards_marked[board_index], board)
+
+                            i += 1
+                        i, k = 0, 0
+                        while i < 5:
+                            if boards_marked[board_index, row_index, i]:
+                                k += 1
+                            if k == 5:
+                                # print("Board " + str(board_index + 1) + " Line " + str(row_index + 1) + " Wins")
+                                # print(row)
+                                if not winners.get(board_index):
+                                    winners[board_index] = col * calc_bingo(boards_marked[board_index], board)
+                                # return col * calc_bingo(boards_marked[board_index], board)
+                            i += 1
+
+                    col_index += 1
+                col_index = 0
+                row_index += 1
+            row_index = 0
+            board_index += 1
+        board_index, row_index, col_index = 0, 0, 0
+
+    if lastWinner:
+        score = winners[list(winners.keys())[-1]]
+    else:
+        score = winners[list(winners.keys())[0]]
+    return score
+
+
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     input_filename = 'data/day01/input.txt'
@@ -216,3 +314,6 @@ if __name__ == '__main__':
 
     print("Day03-1: " + str(power_consumption('data/day03/input.txt')))
     print("Day03-2: " + str(support_rating('data/day03/input.txt')))
+
+    print("Day04-1: " + str(bingo('data/day04/input.txt')))
+    print("Day04-2: " + str(bingo('data/day04/input.txt', True)))

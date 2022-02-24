@@ -9,6 +9,7 @@ from main import dive_aim
 from main import power_consumption
 from main import support_rating
 from main import binary_array2int
+from main import bingo
 
 
 class TestDay01(unittest.TestCase):
@@ -44,6 +45,14 @@ class TestDay01(unittest.TestCase):
         self.log_testcase_name(inspect.currentframe().f_code.co_name)
         self.assertEqual(binary_array2int(['1', '0', '1', '1', '0', '1']), 45)
         self.assertEqual(binary_array2int(['1', '0', '0', '0', '0', '0', '0', '1']), 129)
+
+    def test_bingo_part1(self):
+        self.log_testcase_name(inspect.currentframe().f_code.co_name)
+        self.assertEqual(bingo("data/day04/test.txt"), 4512)
+
+    def test_bingo_part2(self):
+        self.log_testcase_name(inspect.currentframe().f_code.co_name)
+        self.assertEqual(bingo("data/day04/test.txt", True), 1924)
 
 
 if __name__ == 'test_main':
