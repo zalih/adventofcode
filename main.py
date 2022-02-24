@@ -218,7 +218,7 @@ def calc_bingo(boards_marked, board):
     return marks_sum
 
 
-def bingo(filename, lastWinner = False):
+def bingo(filename, looser=False):
     score, line_counter, board_number = 0, 0, 0
 
     board = []
@@ -234,7 +234,6 @@ def bingo(filename, lastWinner = False):
             else:
                 if len(line) > 5:
                     line = ' '.join(line.split())
-                    # board.append(line.split(' '))
                     board.append(([int(x) for x in line.split(' ')]))
                     row_counter += 1
 
@@ -247,12 +246,6 @@ def bingo(filename, lastWinner = False):
             line_counter += 1
     boards_np = np.asarray(boards)
     boards_marked = np.zeros((len(boards), 5, 5), dtype=bool)
-
-    board_number = 0
-    for board in boards_np:
-        board_number += 1
-        # print("Board " + str(board_number))
-        # print(board)
 
     board_index = 0
     row_index = 0
@@ -271,8 +264,6 @@ def bingo(filename, lastWinner = False):
                             if k == 5:
                                 if not winners.get(board_index):
                                     winners[board_index] = col * calc_bingo(boards_marked[board_index], board)
-                                # return col * calc_bingo(boards_marked[board_index], board)
-
                             i += 1
                         i, k = 0, 0
                         while i < 5:
@@ -283,9 +274,7 @@ def bingo(filename, lastWinner = False):
                                 # print(row)
                                 if not winners.get(board_index):
                                     winners[board_index] = col * calc_bingo(boards_marked[board_index], board)
-                                # return col * calc_bingo(boards_marked[board_index], board)
                             i += 1
-
                     col_index += 1
                 col_index = 0
                 row_index += 1
@@ -293,7 +282,7 @@ def bingo(filename, lastWinner = False):
             board_index += 1
         board_index, row_index, col_index = 0, 0, 0
 
-    if lastWinner:
+    if looser:
         score = winners[list(winners.keys())[-1]]
     else:
         score = winners[list(winners.keys())[0]]
