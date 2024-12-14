@@ -5,6 +5,32 @@ import re
 from collections import Counter
 
 
+def get_submatrix(matrix, start_row, start_col, num_rows, num_cols):
+    submatrix = [row[start_col:start_col + num_cols] for row in matrix[start_row:start_row + num_rows]]
+    return submatrix
+
+
+def search_pattern(matrix, search_matrix, output=False):
+    result = 0
+
+    for i in range(len(matrix[0])-2):
+        for j in range(len(matrix)-2):
+            submatrix = get_submatrix(matrix, i, j, 3, 3)
+            submatrix[1][0] = '*'
+            submatrix[0][1] = '*'
+            submatrix[1][2] = '*'
+            submatrix[2][1] = '*'
+            if submatrix == search_matrix:
+                result += 1
+            if output:
+                print(str(i)+'-'+str(j))
+                print(str(submatrix[0]))
+                print(str(submatrix[1]))
+                print(str(submatrix[2]))
+
+    return result
+
+
 def transpose_matrix(matrix):
     result = [[matrix[j][i] for j in range(len(matrix))] for i in range(len(matrix[0]))]
     return result
@@ -38,9 +64,8 @@ def load_file_to_matrix(filename, separator=' ', transpose=False, element_type=i
     return result
 
 
-# Day 01 Part 1
-# calculate distance of two columns (sort them first)
 def day01p1(filename):
+    # calculate distance of two columns (sort them first)
     rooms = []
 
     rooms = load_file_to_matrix(filename, '   ', True)
@@ -51,9 +76,8 @@ def day01p1(filename):
     return result
 
 
-# Day 01 Part 2
-# similarity score: sum of each value in room1 * count of value in room2
 def day01p2(filename):
+    # similarity score: sum of each value in room1 * count of value in room2
     rooms = []
     counter2 = []
 
@@ -251,44 +275,6 @@ def day04p1(filename):
     matches = re.findall('XMAS', result)
     count = len(matches)
     return count
-
-
-def get_submatrix(matrix, start_row, start_col, num_rows, num_cols):
-    submatrix = [row[start_col:start_col + num_cols] for row in matrix[start_row:start_row + num_rows]]
-    return submatrix
-
-
-def transpose_matrix(matrix):
-    rows = len(matrix)
-    cols = len(matrix[0])
-
-    transposed = [[0 for _ in range(rows)] for _ in range(cols)]
-
-    for i in range(rows):
-        for j in range(cols):
-            transposed[j][i] = matrix[i][j]
-    return transposed
-
-
-def search_pattern(matrix, search_pattern, output=False):
-    result = 0
-
-    for i in range(len(matrix[0])-2):
-        for j in range(len(matrix)-2):
-            submatrix = get_submatrix(matrix, i, j, 3, 3)
-            submatrix[1][0] = '*'
-            submatrix[0][1] = '*'
-            submatrix[1][2] = '*'
-            submatrix[2][1] = '*'
-            if submatrix == search_pattern:
-                result += 1
-            if output:
-                print(str(i)+'-'+str(j))
-                print(str(submatrix[0]))
-                print(str(submatrix[1]))
-                print(str(submatrix[2]))
-
-    return result
 
 
 def day04p2(filename):
