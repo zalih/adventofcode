@@ -56,7 +56,7 @@ class TestDay01(unittest.TestCase):
 
 
 if __name__ == 'test_main':
-    logging.basicConfig(filename='./test_main.log', format='%(asctime)s %(levelname)s %(message)s',
+    logging.basicConfig(filename='test_main.log', format='%(asctime)s %(levelname)s %(message)s',
                         datefmt='%Y-%m-%d %H:%M:%S', filemode='w', level=logging.INFO)
 
     # unittest.main()
