@@ -1,6 +1,7 @@
 # Advent of Code solutions
 
 import re
+import sys
 
 from collections import Counter
 
@@ -378,6 +379,113 @@ def day05p2(filename):
     return result
 
 
+def find_character_positions(matrix, target, element_type='list'):
+    positions = []
+    for i in range(len(matrix)):
+        for j in range(len(matrix[i])):
+            if matrix[i][j] == target:
+                if element_type == 'tuple':
+                    positions.append((i, j))
+                else:
+                    positions.append([i, j])
+    return positions
+
+
+def find_obstructions(matrix, marker='#', element_type='list'):
+    return find_character_positions(matrix, marker, element_type)
+
+
+def move(map_area, current_pos, obstructions, direction='up'):
+    new_pos = current_pos
+    # org_dir = direction
+    # print('current: ' + str(current_pos) + direction)
+    if direction == 'up':
+        new_pos[0][0] = current_pos[0][0] - 1
+        if new_pos[0] in obstructions:
+            new_pos[0][0] = current_pos[0][0] + 1
+            new_pos[0][1] = current_pos[0][1] - 1
+            direction = 'right'
+    if direction == 'down':
+        new_pos[0][0] = current_pos[0][0] + 1
+        if new_pos[0] in obstructions:
+            new_pos[0][0] = current_pos[0][0] - 1
+            new_pos[0][1] = current_pos[0][1] + 1
+            direction = 'left'
+    if direction == 'left':
+        new_pos[0][1] = current_pos[0][1] - 1
+        if new_pos[0] in obstructions:
+            new_pos[0][0] = current_pos[0][0]
+            new_pos[0][1] = current_pos[0][1] + 1
+            direction = 'up'
+    if direction == 'right':
+        new_pos[0][1] = current_pos[0][1] + 1
+        if new_pos[0] in obstructions:
+            new_pos[0][0] = current_pos[0][0]
+            new_pos[0][1] = current_pos[0][1] - 1
+            direction = 'down'
+
+    # if org_dir != direction:
+        # print('new____: ' + str(new_pos) + direction)
+
+    if new_pos[0][0] < 0 or new_pos[0][0] >= len(map_area) or new_pos[0][1] >= len(map_area[0]) or new_pos[0][1] < 0:
+        new_pos = None
+
+    return new_pos, direction
+
+
+def day06p1(filename):
+    # start with 1, current position counts too
+    all_positions = []
+    area_map = load_file_to_matrix(filename, '', element_type=chr)
+    direction = 'up'
+    current_pos = find_character_positions(area_map, '^')
+    # print(current_pos)
+    while current_pos:
+        all_positions.append(tuple(current_pos[0]))
+        current_pos, direction = move(area_map, current_pos, find_obstructions(area_map), direction)
+
+    distinct_list = list(set(all_positions))
+
+    return len(distinct_list)
+
+
+def day06p2(filename):
+    # brute force strategy
+    # place obstacle on a free position
+    # check if start_pos is entered again with direction 'up'
+    # criteria for successful placement: position + direction occurs 2nd time
+    dict_visited = {}
+    loops = []
+    area_map = load_file_to_matrix(filename, '', element_type=chr)
+    direction = 'up'
+    current_pos = find_character_positions(area_map, '^')
+    free_positions = find_obstructions(area_map, '.', 'tuple')
+    done = 0
+    total = len(free_positions)
+
+    for tup in free_positions:
+        loop_found = False
+        done += 1
+        sys.stdout.write(f"\r{done} von {total}, Found: {len(loops)}")
+        sys.stdout.flush()
+        dict_visited.clear()
+        area_map[tup[0]][tup[1]] = '#'
+        obstructions = find_obstructions(area_map)
+        while current_pos:
+            if dict_visited.get(tuple((current_pos[0][0], current_pos[0][1], direction))):
+                loops.append(tup)
+                current_pos = None
+            else:
+                dict_visited[tuple((current_pos[0][0], current_pos[0][1], direction))] = 'ok'
+                current_pos, direction = move(area_map, current_pos, obstructions, direction)
+            # print(str(current_pos) + direction)
+
+        area_map[tup[0]][tup[1]] = '.'
+        current_pos = find_character_positions(area_map, '^')
+        direction = 'up'
+    return len(loops)
+
+
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     print("Day01-1: " + str(day01p1('data/day01/input.txt')))
@@ -388,5 +496,8 @@ if __name__ == '__main__':
     print("Day03-2: " + str(day03p2('data/day03/input.txt')))
     print("Day04-1: " + str(day04p1('data/day04/input.txt')))
     print("Day04-2: " + str(day04p2('data/day04/input.txt')))
-    print("Day05-1: " + str(day05p1('data/day05/input.txt')))
-    print("Day05-2: " + str(day05p2('data/day05/input.txt')))
+    # print("Day05-1: " + str(day05p1('data/day05/input.txt')))
+    # print("Day05-2: " + str(day05p2('data/day05/input.txt')))
+    # print("Day06-1: " + str(day06p1('data/day06/input.txt')))
+    print("Day06-2: " + str(day06p2('data/day06/input.txt')))
+    # 1686
