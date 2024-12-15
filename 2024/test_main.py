@@ -3,7 +3,7 @@ import logging
 import inspect
 
 
-from main import day01p1, day01p2, day02p1, day03p1, day03p2, day04p1, day04p2
+from main import day01p1, day01p2, day02p1, day03p1, day03p2, day04p1, day04p2, day05p1, day05p2
 
 
 class TestDay01(unittest.TestCase):
@@ -22,6 +22,8 @@ class TestDay01(unittest.TestCase):
         self.assertEqual(day03p2("data/day03/test2.txt"), 48)
         self.assertEqual(day04p1("data/day04/test.txt"), 18)
         self.assertEqual(day04p2("data/day04/test2.txt"), 9)
+        self.assertEqual(day05p1("data/day05/test.txt"), 143)
+        self.assertEqual(day05p2("data/day05/test.txt"), 123)
 
 
 if __name__ == 'test_main':

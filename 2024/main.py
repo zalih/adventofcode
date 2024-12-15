@@ -61,6 +61,7 @@ def load_file_to_matrix(filename, separator=' ', transpose=False, element_type=i
             result = load_chr(file, separator)
         if transpose:
             result = transpose_matrix(result)
+    file.close()
     return result
 
 
@@ -295,6 +296,88 @@ def day04p2(filename):
     return result
 
 
+def check_violation(val, rules, blacklist):
+    result = -1
+    # seen = None
+    for rule in rules:
+        if rule[0] == val:
+            for seen in blacklist:
+                if rule[1] == seen:
+                    result = seen
+    return result
+
+
+def load_rules_and_pages(filename):
+    rules = []
+    pages = []
+    rules_section = True
+    with open(filename, 'r') as file:
+        for line in file:
+            if line == '\n':
+                rules_section = False
+                continue
+            if rules_section:
+                rules.append(list(map(int, line.strip().split('|'))))
+            else:
+                pages.append(list(map(int, line.strip().split(','))))
+    file.close()
+
+    return rules, pages
+
+
+def day05p1(filename):
+    result = 0
+    rules = []
+    pages = []
+    rules, pages = load_rules_and_pages(filename)
+    for row in pages:
+        blacklist = []
+        violation = -1
+        page = -1
+        for val in row:
+            violation = check_violation(val, rules, blacklist)
+            if violation != -1:
+                page = violation
+            blacklist.append(val)
+        if page == -1:
+            pos = int((len(row)-1) / 2)
+            result += row[pos]
+    return result
+
+
+def swap_values_in_list(values, swap):
+    index1, index2 = values.index(swap[0]), values.index(swap[1])
+    values[index2], values[index1] = values[index1], values[index2]
+    return values
+
+
+def day05p2(filename):
+    result = 0
+    rules, pages = load_rules_and_pages(filename)
+    for row in pages:
+        i = 0
+        blacklist = []
+        corrected = False
+        # print('checking: ' + str(row))
+        while i <= (len(row)-1):
+            violation = check_violation(row[i], rules, blacklist)
+            if violation != -1:
+                pages = violation, row[i]
+                row = swap_values_in_list(row, pages)
+                corrected = True
+                i = 0
+                blacklist = []
+            else:
+                blacklist.append(row[i])
+                i += 1
+        if corrected:
+            # print('corrected: ' + str(row))
+            pos = int((len(row)-1) / 2)
+            result += row[pos]
+
+    return result
+
+
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     print("Day01-1: " + str(day01p1('data/day01/input.txt')))
@@ -305,3 +388,5 @@ if __name__ == '__main__':
     print("Day03-2: " + str(day03p2('data/day03/input.txt')))
     print("Day04-1: " + str(day04p1('data/day04/input.txt')))
     print("Day04-2: " + str(day04p2('data/day04/input.txt')))
+    print("Day05-1: " + str(day05p1('data/day05/input.txt')))
+    print("Day05-2: " + str(day05p2('data/day05/input.txt')))
