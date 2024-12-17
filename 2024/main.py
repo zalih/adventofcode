@@ -2,6 +2,7 @@
 
 import re
 import sys
+import itertools
 
 from collections import Counter
 
@@ -486,18 +487,75 @@ def day06p2(filename):
     return len(loops)
 
 
+def load_data(filename):
+
+    results = []
+    equations = []
+
+    with open(filename, 'r') as file:
+        for line in file:
+            pos = line.find(':')
+            results.append(line[:pos])
+            equations.append(line[pos+1:].split())
+
+    file.close()
+
+    return results, equations
+
+
+def operator_combinations(operators, factor):
+    arr = list(itertools.product(operators, repeat=factor))
+    return arr
+
+
+def day07p1(filename, operators):
+    total_calc = 0
+    done = 0
+    results, equations = load_data(filename)
+
+    for i, equ in enumerate(equations):
+        done += 1
+        sys.stdout.write(f"\r{done} von {len(equations)}")
+        sys.stdout.flush()
+        plan = operator_combinations(operators, len(equ)-1)
+        found = False
+
+        for op in plan:
+            if found:
+                break
+            sub_calc = 0
+
+            for j, val in enumerate(equ):
+                if j > 0:
+                    if op[j-1] == '+':
+                        sub_calc += int(val)
+                    if op[j-1] == '*':
+                        sub_calc *= int(val)
+                    if op[j-1] == '#':
+                        sub_calc = int(str(sub_calc) + str(val))
+                else:
+                    sub_calc = int(val)
+                    eq = str(val)
+
+            if sub_calc == int(results[i]):
+                total_calc += sub_calc
+                found = True
+
+    return total_calc
+
+
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    print("Day01-1: " + str(day01p1('data/day01/input.txt')))
-    print("Day01-2: " + str(day01p2('data/day01/input.txt')))
-    print("Day02-1: " + str(day02p1('data/day02/input.txt')))
-    print("Day02-2: " + str(day02p1('data/day02/input.txt', True)))
-    print("Day03-1: " + str(day03p1('data/day03/input.txt')))
-    print("Day03-2: " + str(day03p2('data/day03/input.txt')))
-    print("Day04-1: " + str(day04p1('data/day04/input.txt')))
-    print("Day04-2: " + str(day04p2('data/day04/input.txt')))
+    # print("Day01-1: " + str(day01p1('data/day01/input.txt')))
+    # print("Day01-2: " + str(day01p2('data/day01/input.txt')))
+    # print("Day02-1: " + str(day02p1('data/day02/input.txt')))
+    # print("Day02-2: " + str(day02p1('data/day02/input.txt', True)))
+    # print("Day03-1: " + str(day03p1('data/day03/input.txt')))
+    # print("Day03-2: " + str(day03p2('data/day03/input.txt')))
+    # print("Day04-1: " + str(day04p1('data/day04/input.txt')))
+    # print("Day04-2: " + str(day04p2('data/day04/input.txt')))
     # print("Day05-1: " + str(day05p1('data/day05/input.txt')))
     # print("Day05-2: " + str(day05p2('data/day05/input.txt')))
     # print("Day06-1: " + str(day06p1('data/day06/input.txt')))
-    print("Day06-2: " + str(day06p2('data/day06/input.txt')))
-    # 1686
+    # print("\nDay06-2: " + str(day06p2('data/day06/input.txt')))
+    print("\nDay07-1: " + str(day07p1('data/day07/input.txt', ['+', '*', '#'])))

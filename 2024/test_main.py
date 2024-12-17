@@ -3,7 +3,8 @@ import logging
 import inspect
 
 
-from main import day01p1, day01p2, day02p1, day03p1, day03p2, day04p1, day04p2, day05p1, day05p2, day06p1, day06p2
+from main import day01p1, day01p2, day02p1, day03p1, day03p2, day04p1, day04p2, day05p1, day05p2, day06p1, day06p2, \
+    day07p1, operator_combinations
 
 
 class TestDay01(unittest.TestCase):
@@ -28,8 +29,16 @@ class TestDay01(unittest.TestCase):
         # self.assertEqual(day05p2("data/day05/input.txt"), 6897)
         self.assertEqual(day06p1("data/day06/test.txt"), 41)
         # self.assertEqual(day06p1("data/day06/input.txt"), 5177)
-        self.assertEqual(day06p2("data/day06/test.txt"), 6)
+        # self.assertEqual(day06p2("data/day06/test.txt"), 6)
         # self.assertEqual(day06p2("data/day06/input.txt"), 1686)
+        self.assertEqual(day07p1("data/day07/test.txt", ['+', '*']), 3749)
+        # self.assertEqual(day07p1("data/day07/input.txt", ['+', '*']), 7579994664753)
+        # self.assertEqual(operator_combinations(['*', '+'], 4), 2**4)
+        self.assertEqual(day07p1("data/day07/test.txt", ['+', '*', '#']), 11387)
+        # self.assertEqual(day07p1("data/day07/input.txt", ['+', '*', '#']), 438027111276610)
+
+
+
 
 
 if __name__ == 'test_main':
