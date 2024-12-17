@@ -54,12 +54,12 @@ def load_chr(file, separator=' '):
     return result
 
 
-def load_file_to_matrix(filename, separator=' ', transpose=False, element_type=int):
+def load_file_to_matrix(filename, element_type, separator=' ', transpose=False):
     result = []
     with open(filename, 'r') as file:
-        if element_type == int:
+        if element_type == 'int':
             result = load_int(file, separator)
-        if element_type == chr:
+        if element_type == 'chr':
             result = load_chr(file, separator)
         if transpose:
             result = transpose_matrix(result)
@@ -69,11 +69,10 @@ def load_file_to_matrix(filename, separator=' ', transpose=False, element_type=i
 
 def day01p1(filename):
     # calculate distance of two columns (sort them first)
-    rooms = []
 
-    rooms = load_file_to_matrix(filename, '   ', True)
-    rooms[0].sort();
-    rooms[1].sort();
+    rooms = load_file_to_matrix(filename, 'int', '   ', True)
+    rooms[0].sort()
+    rooms[1].sort()
     result = sum(map(lambda x, y: abs(x - y), rooms[0], rooms[1]))
 
     return result
@@ -81,10 +80,9 @@ def day01p1(filename):
 
 def day01p2(filename):
     # similarity score: sum of each value in room1 * count of value in room2
-    rooms = []
     counter2 = []
 
-    rooms = load_file_to_matrix(filename, '   ', True)
+    rooms = load_file_to_matrix(filename, 'int', '   ', True)
 
     # Counter from collections counts each element and creates a dictionary with the count
     counter2 = Counter(rooms[1])
@@ -92,41 +90,6 @@ def day01p2(filename):
     result = sum(map(lambda x: x * counter2[x], rooms[0]))
 
     return result
-
-
-def day02p1(filename):
-    levels = []
-    delta = 0
-    safe = 0
-
-    levels = load_file_to_matrix(filename)
-    for level in levels:
-        prev = bool(False)
-        failed = False
-        trend = 'und'
-        for val in level:
-            if not prev:
-                prev = int(val)
-            else:
-                delta = int(val) - prev
-                if delta == 0 or abs(delta) > 3:
-                    failed = True
-                    break
-                if 1 <= delta <= 3 and trend == 'dec':
-                    failed = True
-                    break
-                if -1 >= delta >= -3 and trend == 'inc':
-                    failed = True
-                    break
-                if delta > 0:
-                    trend = 'inc'
-                else:
-                    trend = 'dec'
-                prev = val
-        if not failed:
-            safe += 1
-
-    return safe
 
 
 def check_safety(level, skip=0):
@@ -156,7 +119,7 @@ def check_safety(level, skip=0):
 def day02p1(filename, tolerant=False):
     safe = 0
 
-    levels = load_file_to_matrix(filename)
+    levels = load_file_to_matrix(filename, 'int')
     for level in levels:
         index = 0
         failed = check_safety(level)
@@ -174,7 +137,7 @@ def day03p1(filename):
     result = 0
     with open(filename) as file:
         for line in file:
-            x = re.findall("mul\((\d{1,3}),(\d{1,3})\)", line)
+            x = re.findall(r"mul\((\d{1,3}),(\d{1,3})\)", line)
             for tup in x:
                 result += int(tup[0]) * int(tup[1])
     file.close()
@@ -196,7 +159,7 @@ def day03p2(filename):
             if pos_2 != -1:
                 cleaned += data[pos_2+4:]
             data = cleaned
-        x = re.findall("mul\((\d{1,3}),(\d{1,3})\)", data)
+        x = re.findall(r"mul\((\d{1,3}),(\d{1,3})\)", data)
         for tup in x:
             result += int(tup[0]) * int(tup[1])
     file.close()
@@ -210,7 +173,7 @@ def day04p1(filename):
     # store iterations to a list of strings
     # search for keyword in all strings and count them
     result = ""
-    xmas = load_file_to_matrix(filename, '', element_type=chr)
+    xmas = load_file_to_matrix(filename, 'chr', '')
     # print(xmas)
     # horizontal
     for row in xmas:
@@ -282,10 +245,8 @@ def day04p1(filename):
 
 def day04p2(filename):
     result = 0
-    xmas = load_file_to_matrix(filename, '', element_type=chr)
-    search_pattern1 = [['M', '*', 'S'],
-                      ['*', 'A', '*'],
-                      ['M', '*', 'S']]
+    xmas = load_file_to_matrix(filename, 'chr', '')
+    search_pattern1 = [['M', '*', 'S'], ['*', 'A', '*'], ['M', '*', 'S']]
 
     result += search_pattern(xmas, search_pattern1)
     transposed_matrix = transpose_matrix(search_pattern1)
@@ -329,12 +290,9 @@ def load_rules_and_pages(filename):
 
 def day05p1(filename):
     result = 0
-    rules = []
-    pages = []
     rules, pages = load_rules_and_pages(filename)
     for row in pages:
         blacklist = []
-        violation = -1
         page = -1
         for val in row:
             violation = check_violation(val, rules, blacklist)
@@ -437,7 +395,7 @@ def move(map_area, current_pos, obstructions, direction='up'):
 def day06p1(filename):
     # start with 1, current position counts too
     all_positions = []
-    area_map = load_file_to_matrix(filename, '', element_type=chr)
+    area_map = load_file_to_matrix(filename, 'chr', '')
     direction = 'up'
     current_pos = find_character_positions(area_map, '^')
     # print(current_pos)
@@ -457,7 +415,7 @@ def day06p2(filename):
     # criteria for successful placement: position + direction occurs 2nd time
     dict_visited = {}
     loops = []
-    area_map = load_file_to_matrix(filename, '', element_type=chr)
+    area_map = load_file_to_matrix(filename, 'chr', '')
     direction = 'up'
     current_pos = find_character_positions(area_map, '^')
     free_positions = find_obstructions(area_map, '.', 'tuple')
@@ -465,7 +423,6 @@ def day06p2(filename):
     total = len(free_positions)
 
     for tup in free_positions:
-        loop_found = False
         done += 1
         sys.stdout.write(f"\r{done} von {total}, Found: {len(loops)}")
         sys.stdout.flush()
@@ -535,7 +492,6 @@ def day07p1(filename, operators):
                         sub_calc = int(str(sub_calc) + str(val))
                 else:
                     sub_calc = int(val)
-                    eq = str(val)
 
             if sub_calc == int(results[i]):
                 total_calc += sub_calc
